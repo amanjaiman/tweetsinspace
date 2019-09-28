@@ -18,34 +18,10 @@ lat         float64
 long        float64
 """
 def get_tweet_info(query: str, num: int):
-    # a = 0
-    # b = 0
-    # while remaining > 0:
-    #     print(remaining)
-    #     response, cursor = query_twitter_api(query, cursor, min(remaining, MAX_COUNT))
-    #     remaining -= min(remaining, MAX_COUNT)
-    #     for result in response:
-    #         a += 1
-    #         coordinates = None
-    #         if result['coordinates'] is not None:
-    #             coordinates = results['coordinates']
-    #         elif result['place'] is not None:
-    #             bbox = result['place']['bounding_box']['coordinates'][0]
-    #             coordinates = np.mean(bbox, axis=0).tolist()
-    #         if coordinates is None:
-    #             continue
-    #         b += 1
-    #         entry = [result['text'], *coordinates]
-    #         print(entry)
-    # print(a, b)
-    # return DataFrame(data=entries, columns=['body', 'lat', 'long'])
     entries = []
     total = 0
     pager = query_twitter_api(query)
     for result in pager.get_iterator():
-        total += 1
-        if total > num:
-            break
         coordinates = None
         if result['coordinates'] is not None:
             coordinates = results['coordinates']
@@ -56,7 +32,10 @@ def get_tweet_info(query: str, num: int):
             continue
         entry = [result['text'], *coordinates]
         entries.append(entry)
-    return entries
+        total += 1
+        if total > num:
+            break
+    return DataFrame(data=entries, columns=['body', 'lat', 'long'])
 
 """
 Takes a string query and sends a GET request to the Twitter API, and
@@ -73,9 +52,8 @@ def query_twitter_api(query: str, count: int=MAX_COUNT) -> dict:
     return pager
 
 
-def getTweets(query: str):
-    tweets = []
-    for i in range(0, 11):
-        tweets.append(get_tweet_info(query, 1000))
-    return DataFrame(data=tweets, columns=['body', 'lat', 'long'])
+#def getTweets(query: str):
+#    tweets = []
+#    for i in range(0, 11):
+#        tweets.append(get_tweet_info(query, 1000))
     
