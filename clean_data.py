@@ -1,6 +1,19 @@
 import utils
 import pandas as pd
+import numpy as np
 
-df = utils.get_tweet_info("Apple", 100)
+# df = utils.get_tweet_info("Apple", 100)
 
-df.to_csv('apple_geo.csv')
+# df.to_csv('apple_geo.csv')
+
+def get_data():
+    df = pd.read_csv('apple_geo.csv')
+
+    df = df.replace(['type', 'coordinates'], np.nan)
+    df = df.dropna()
+
+    # print(df.shape)
+
+    return df
+
+

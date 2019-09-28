@@ -13,6 +13,8 @@ from pandas_datareader import data
 import plotly.express as px
 import os
 
+import clean_data
+
 mapbox_access_token = open(".mapbox_token").read()
 
 # creates stock chart
@@ -125,7 +127,8 @@ app.layout = html.Div([
 def update_figure(n_clicks, date_range, query, ticker):
 
     # call Jagan's module
-    df = pd.DataFrame({'latitude': ['45.5017'], 'longitude':['-73.5673'], 'body': ['Montreal']})
+    df = clean_data.get_data()
+    # df = pd.DataFrame({'latitude': ['45.5017'], 'longitude':['-73.5673'], 'body': ['Montreal']})
     map_figure = create_map(df)
 
     # start = datetime(2005, 1, 1)
