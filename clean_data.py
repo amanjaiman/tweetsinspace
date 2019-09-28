@@ -6,8 +6,8 @@ import numpy as np
 
 # df.to_csv('apple_geo.csv')
 
-def get_data():
-    df = pd.read_csv('apple_geo.csv')
+def get_data(path):
+    df = pd.read_csv(path)
 
     df = df.replace(['type', 'coordinates'], np.nan)
     df = df.dropna()
@@ -16,6 +16,6 @@ def get_data():
 
     return df
 
-df = utils.get_tweet_info("Donald Trump", 100)
+# df = utils.get_tweet_info("Donald Trump", 100)
 
-df.to_csv('data/trump_geo.csv')
+# df.to_csv('data/trump_geo.csv')

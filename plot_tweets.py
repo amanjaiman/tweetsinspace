@@ -38,7 +38,8 @@ def create_map(df):
         lon=lon,
         mode='markers',
         marker=go.scattermapbox.Marker(
-            size=14
+            size=10,
+            opacity=0.4
         ),
         text=text,
     ))
@@ -127,7 +128,7 @@ app.layout = html.Div([
 def update_figure(n_clicks, date_range, query, ticker):
 
     # call Jagan's module
-    df = clean_data.get_data()
+    df = clean_data.get_data('./data/trump_geo.csv')
     # df = pd.DataFrame({'latitude': ['45.5017'], 'longitude':['-73.5673'], 'body': ['Montreal']})
     map_figure = create_map(df)
 
