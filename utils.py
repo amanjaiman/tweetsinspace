@@ -24,7 +24,7 @@ def get_tweet_info(query: str, num: int):
     for result in pager.get_iterator():
         coordinates = None
         if result['coordinates'] is not None:
-            coordinates = results['coordinates']
+            coordinates = result['coordinates']
         elif result['place'] is not None:
             bbox = result['place']['bounding_box']['coordinates'][0]
             coordinates = np.mean(bbox, axis=0).tolist()
@@ -33,6 +33,7 @@ def get_tweet_info(query: str, num: int):
         entry = [result['text'], *coordinates]
         entries.append(entry)
         total += 1
+        print("Adding record "+ str(total))
         if total > num:
             break
     return DataFrame(data=entries, columns=['body', 'lat', 'long'])
@@ -50,10 +51,4 @@ def query_twitter_api(query: str, count: int=MAX_COUNT) -> dict:
                'count':         count}
     pager = TwitterPager(api, 'search/tweets', params)
     return pager
-
-
-#def getTweets(query: str):
-#    tweets = []
-#    for i in range(0, 11):
-#        tweets.append(get_tweet_info(query, 1000))
     
