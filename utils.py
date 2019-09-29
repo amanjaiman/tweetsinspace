@@ -8,6 +8,9 @@ from TwitterAPI import TwitterAPI, TwitterPager
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from newsapi.newsapi_client import NewsApiClient
 import dateutil.parser
+
+import pandas as pd
+
 import plotly.graph_objects as go
 import datetime
 
@@ -31,10 +34,10 @@ lat         float64
 long        float64
 """
 def get_tweet_info(query: str, num: int):
-    with open('data/'+query+'FULLresults.csv', 'a') as file:
+    with open('data/'+query+'2FULLresults.csv', 'a') as file:
         writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["date", "text", "sent", "favorites", "retweets"])
-    with open('data/'+query+'GEOresults.csv', 'a') as file:
+    with open('data/'+query+'2GEOresults.csv', 'a') as file:
         writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerow(["date", "text", "sent", "favorites", "retweets", "longitude", "latitude"])
 
@@ -115,7 +118,8 @@ def return_news_df(query, start, end):
     pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     if articles['status'] == 'ok':
         for article in articles['articles']:
-            dict_list.append({'source':article['source']['name'],'date':dateutil.parser.parse(article['publishedAt']).date(), 'author': article['author'], 'title': article['title'], 'description':article['description'], 'content':article['content'], 'sentiment':sentiment(article['content'])})
+            if article['content']:
+                dict_list.append({'source':article['source']['name'],'date':dateutil.parser.parse(article['publishedAt']).date(), 'author': article['author'], 'title': article['title'], 'description':article['description'], 'content':article['content'], 'sentiment':sentiment(article['content'])})
         df = pd.DataFrame(dict_list)
         return df
     return None

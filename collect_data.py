@@ -1,3 +1,3 @@
 import utils
 
-utils.get_tweet_info("Donald Trump", 400)
+utils.get_tweet_info("Donald Trump", 200)
