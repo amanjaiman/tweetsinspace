@@ -1,29 +1,32 @@
 import spacy
 import geocoder
 from spacy.pipeline import EntityRecognizer
+from pandas import DataFrame
 
 nlp = spacy.load('en_core_web_sm')
 
+def geocode_location(location):
+    response = geocoder.arcgis(location)
+    if not response['error']:
+        return [response.json['lat'], response.json['long']]
+
+
 def ner(tweets: list):
-    people = {}
-    organizations = {}
-    locations = {}
+    columns = [[], [], [], [], []]
     for tweet in tweets:
         doc = nlp(tweet)
+        for column in columns:
+            column.append([])
         for ent in doc.ent:
             if ent.label_ == 'PERSON':
-                people.add(ent.text)
-            elif ent.label == 'GPE':
-                locations.add(ent.text)
+                columns[0][-1].append(ent.text)
             elif ent.label == 'ORG':
-                locations.add(ent.text)
-    return {'people':           [*people],
-            'organizations':    [*organizations],
-            'locations':        [*locations]}
+                columns[1][-1].append(ent.text)
+            elif ent.label == 'GPE':
+                columns[2][-1].append(ent.text)
+                coords = geocode_location(ent.text)
+                if coords is not None:
+                    columns[3][-1].append(coords[0])
+                    columns[4][-1].append(coords[1])
 
-def geocode_locations(locations):
-    coords = []
-    for location in locations:
-        response = geocoder.arcgis(location)
-        coords.append([response['lat'], response['long']])
-    return coords
+    return DataFrame(data=columns, columns=['people', 'organizations', 'locations', 'loclats', 'loclongs'])
