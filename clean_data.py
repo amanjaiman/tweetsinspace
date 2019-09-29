@@ -7,12 +7,12 @@ import numpy as np
 # df.to_csv('apple_geo.csv')
 
 def get_data(path):
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, quotechar="|")
 
     df = df.replace(['type', 'coordinates'], np.nan)
     df = df.dropna()
 
-    df.insert(3, 'sentiment', df['body'].map(utils.sentiment))
+    df.insert(3, 'sentiment', df['text'].map(utils.sentiment))
     # df['sentiment'] = df['body'].apply(utils.sentiment)
     # print(df.shape)
 

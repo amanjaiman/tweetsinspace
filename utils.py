@@ -32,10 +32,10 @@ long        float64
 def get_tweet_info(query: str, num: int):
     with open('data/'+query+'FULLresults.csv', 'a') as file:
         writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(["data", "text", "sent", "favorites", "retweets"])
+        writer.writerow(["date", "text", "sent", "favorites", "retweets"])
     with open('data/'+query+'GEOresults.csv', 'a') as file:
         writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(["data", "text", "sent", "favorites", "retweets", "longitude", "latitude"])
+        writer.writerow(["date", "text", "sent", "favorites", "retweets", "longitude", "latitude"])
 
     total = 0
     pager = query_twitter_api(query, "mixed")
@@ -54,7 +54,7 @@ def get_tweet_info(query: str, num: int):
         if coordinates is None:
             entry = [date, text, sent, favorites, retweets]
             with open('data/'+query+'FULLresults.csv', 'a') as file:
-                writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
+                writer = csv.writer(file, delimiter=',', quotechar="|", quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(entry)
             continue
 
@@ -102,6 +102,11 @@ def query_twitter_api(query: str, result_type: str, count: int=MAX_COUNT) -> dic
     pager = TwitterPager(api, 'search/tweets', params)
     return pager
 
+"""
+query -> string
+start -> string (yyyy-mm-dd)
+end -> string (yyyy-mm-dd)
+"""
 def return_news_df(query, start, end):
     newsapi = NewsApiClient(api_key='4b569ddbefbc4621927cbf78eaed5444')
     articles = newsapi.get_everything(q=query,from_param=start,to=end,language='en',sort_by='relevancy')
@@ -119,3 +124,10 @@ def new_time_series(df):
     fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='marker', name=''))
     return fig
 
+def tweet_line_graph_popularity(df):
+    df[date_binned] = datetime.datetime.strptime(df[date_binned], '%a %b %d %H:%M:%S %z %Y').date()
+    sum_df = df.groupby(by='date_binned', as_index=False).count()
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=sum_df['date_binned'], y=sum_df['count'], mode='markers+line'))
+    return fig
+    
