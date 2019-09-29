@@ -126,20 +126,30 @@ def return_news_df(query, start, end):
 
 # sentiment
 def new_time_series(df):
-    df = df.rename(columns={'data':'date'})
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='markers', name=''))
-    return fig
+        df = df.rename(columns={'data':'date'})
+        colorscale=[[0.0, "rgb(165,0,38)"],
+                [0.1111111111111111, "rgb(215,48,39)"],
+                [0.2222222222222222, "rgb(244,109,67)"],
+                [0.3333333333333333, "rgb(253,174,97)"],
+                [0.4444444444444444, "rgb(254,224,144)"],
+                [0.5555555555555556, "rgb(224,243,248)"],
+                [0.6666666666666666, "rgb(171,217,233)"],
+                [0.7777777777777778, "rgb(116,173,209)"],
+                [0.8888888888888888, "rgb(69,117,180)"],
+                [1.0, "rgb(49,54,149)"]]
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], marker = {'color':df['sentiment']+1,'colorscale':colorscale}, mode='markers', name=''))
+        return fig
 
 # volume
 def tweet_line_graph_popularity(df):
     df = df.rename(columns={'data':'date'})
-    df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%a %b %d %H:%M:%S %z %Y').date())
+    df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%a %b %d %H:%M:%S %z %Y').strftime("%Y-%m-%d %H"))
     sum_df = df.groupby(by='date', as_index=False).count()
     fig = go.Figure()
-    # print(sum_df)
     fig.add_trace(go.Scatter(x=sum_df['date'], y=sum_df['retweets'], mode='markers+lines'))
     return fig
+
 
 def twitter_csv_to_df(csv):
 	df = pd.read_csv(csv)
