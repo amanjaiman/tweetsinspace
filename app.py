@@ -18,6 +18,8 @@ import utils
 import clean_data
 import news_wordcloud
 
+import random
+
 mapbox_access_token = open(".mapbox_token").read()
 
 days = 30
@@ -59,7 +61,8 @@ def create_map(df):
         lon=lon,
         mode='markers',
         marker=go.scattermapbox.Marker(
-            size=retweets*10,
+            # size=retweets*10,
+            size=10,
             opacity=0.8,
             color = sentiment,
         ),
@@ -178,16 +181,12 @@ def update_figure(n_clicks, date_range, query, ticker=None):
     tweet_table = create_table(df)
     # tweet_table = None
     img_path = news_wordcloud.get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
+    app.get_asset_url(img_path)
 
-    print(img_path)
+    # print(img_path)
     return map_figure, sentiment_fig, volume_fig, tweet_table, img_path
 
 
-# @app.callback(
-#     dash.dependencies.Output('output-container-range-slider', 'children'),
-#     [dash.dependencies.Input('my-range-slider', 'value')])
-# def update_output(value):
-#     return 'You have selected "{}"'.format(value)
 
 if __name__ == '__main__':
     app.run_server(debug=True)

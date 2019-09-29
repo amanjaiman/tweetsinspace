@@ -73,7 +73,7 @@ def generate_word_cloud(words, picture_location):
     plt.imshow(wc.recolor(color_func=image_colors), interpolation="bilinear")
     plt.axis("off")
 
-    savename = ''.join(picture_location.split("/")[-1:])+"_wordcloud.png"
+    savename = 'assets/' + ''.join(picture_location.split("/")[-1:])+"_wordcloud.png"
 
     plt.savefig(savename)
     # plt.close(wc)
