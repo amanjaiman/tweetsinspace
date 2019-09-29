@@ -109,7 +109,7 @@ app.layout = html.Div([
     
     dcc.Graph(id='map'),
     dcc.Graph(id='sentiment'),
-    # dcc.Graph(id='volume'),
+    dcc.Graph(id='volume'),
 
     html.Div(children='''
         Input a query, and a valid ticker symbol.
@@ -140,7 +140,7 @@ app.layout = html.Div([
 @app.callback(
     [Output('map', 'figure'),
     Output('sentiment', 'figure'),
-    # Output('volume', 'figure'),
+    Output('volume', 'figure'),
     Output('tweets', 'children'),
     ],
 
@@ -162,6 +162,7 @@ def update_figure(n_clicks, date_range, query, ticker=None):
     map_figure = create_map(df)
 
     sentiment_fig = utils.new_time_series(df)
+    volume_fig = utils.tweet_line_graph_popularity(df)
 
     start = datetime.now() - timedelta(days=date_range[1])
     end = datetime.now() - timedelta(days=date_range[0])
@@ -172,7 +173,7 @@ def update_figure(n_clicks, date_range, query, ticker=None):
     tweet_table = create_table(df)
     # tweet_table = None
 
-    return map_figure, sentiment_fig, tweet_table
+    return map_figure, sentiment_fig, volume_fig, tweet_table
 
 
 # @app.callback(
