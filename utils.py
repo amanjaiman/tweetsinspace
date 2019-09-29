@@ -5,15 +5,15 @@ import requests
 import numpy as np
 from pandas import DataFrame
 from TwitterAPI import TwitterAPI, TwitterPager
-#from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 MAX_COUNT = 100
 
-#sid = SentimentIntensityAnalyzer()
+sid = SentimentIntensityAnalyzer()
 
 
-#def sentiment(text: str) -> int:
-#    return sid.polarity_scores(text)['compound']
+def sentiment(text: str) -> int:
+   return sid.polarity_scores(text)['compound']
 
 
 """
