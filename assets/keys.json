@@ -1,0 +1,12 @@
+{
+    "twitter": {
+        "consumer_key": "JYqK26TMZqHDsUU0sziEBEoEC",
+        "consumer_secret": "2DyDnmDNXNrdWEwNebvoPkyxfU7VSMbXiVntZsgHa3uoF4QmS8",
+        "access_token_key": "611371542-rOlL97ZYc2OFRlA39ncZDq3IwuVlCDwlLBrVut2u",
+        "access_token_secret": "ZiGQAYKqjF5WEGSS1ISYx6KRRh5zRqBHMKIrPFjgbDyYC"
+    },
+    "microsoft": {
+        "endpoint": "https://tweetsinspacewordcloud.cognitiveservices.azure.com/",
+        "key": "867516e4f8e5436cb24b18f6afeab05f"
+    }
+}
