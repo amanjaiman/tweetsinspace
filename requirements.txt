@@ -102,7 +102,7 @@ tensorflow-estimator==1.13.0
 tensorflow-gpu==1.13.1
 termcolor==1.1.0
 tqdm==4.32.2
-Twisted==17.9.0
+Twisted==19.7.0
 TwitterAPI==2.5.9
 ufw==0.36
 unattended-upgrades==0.1
