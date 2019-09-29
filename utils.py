@@ -30,6 +30,13 @@ lat         float64
 long        float64
 """
 def get_tweet_info(query: str, num: int):
+    with open('data/'+query+'FULLresults.csv', 'a') as file:
+        writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["data", "text", "sent", "favorites", "retweets"])
+    with open('data/'+query+'GEOresults.csv', 'a') as file:
+        writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["data", "text", "sent", "favorites", "retweets", "longitude", "latitude"])
+
     total = 0
     pager = query_twitter_api(query, "mixed")
     for result in pager.get_iterator():
@@ -47,7 +54,7 @@ def get_tweet_info(query: str, num: int):
         if coordinates is None:
             entry = [date, text, sent, favorites, retweets]
             with open('data/'+query+'FULLresults.csv', 'a') as file:
-                writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(entry)
             continue
 
@@ -61,19 +68,25 @@ def get_tweet_info(query: str, num: int):
             break
 
 def get_tweet_info_no_loc(query: str, num: int):
-    entries = []
+    with open('data/'+query+'FULLresults.csv', 'a') as file:
+        writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(["data", "text", "sent", "favorites", "retweets"])
+
     total = 0
-    pager = query_twitter_api(query, "popular")
+    pager = query_twitter_api(query, "mixed")
     for result in pager.get_iterator():
-        text = result['text']
         date = result['created_at']
-        entry = [date, text, sentiment(text)]
-        entries.append(entry)
+        text = result['text']
+        sent = sentiment(text)
+        favorites = result['favorite_count']
+        retweets = result['retweet_count']
+        entry = [date, text, sent, favorites, retweets]
+        with open('data/'+query+'FULLresults.csv', 'a') as file:
+            writer = csv.writer(file, delimiter=',', quotechar="'", quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(entry)
         total += 1
-        print("Adding record "+ str(total))
         if total >= num:
             break
-    return DataFrame(data=entries, columns=['date', 'text', 'sentiment'])
 
 """
 Takes a string query and sends a GET request to the Twitter API, and
