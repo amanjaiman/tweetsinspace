@@ -76,5 +76,5 @@ def query_twitter_api(query: str, result_type: str, count: int=MAX_COUNT) -> dic
     pager = TwitterPager(api, 'search/tweets', params)
     return pager
 
-get_tweet_info("Donald Trump", 1)
+# get_tweet_info("Donald Trump", 1)
     

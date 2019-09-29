@@ -28,8 +28,8 @@ def generate_stock_graph(ticker, start, end):
     fig = px.line(df, x='date', y='close', title='Stock Price for ' + ticker)
     return fig
 
-from newsapi.newsapi_client import NewsApiClient
-import pandas as pd
+# from newsapi.newsapi_client import NewsApiClient
+# import pandas as pd
 
 def return_news_df(query, start, end):
     newsapi = NewsApiClient(api_key='4b569ddbefbc4621927cbf78eaed5444')
@@ -114,7 +114,7 @@ app.layout = html.Div([
 
     html.Button(id='submit-button', n_clicks=0, children='Submit'),
 
-    html.Div(id='Tweets'),
+    html.Div(id='tweets'),
     dcc.RangeSlider(
         id='date_range_slider',
         min=0,
@@ -134,7 +134,7 @@ app.layout = html.Div([
 @app.callback(
     [Output('map', 'figure'),
     Output('chart', 'figure'),
-    Output('text', 'children'),
+    Output('tweets', 'children'),
     ],
 
     [Input('submit-button', 'n_clicks'),
