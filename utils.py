@@ -151,6 +151,7 @@ def tweet_line_graph_popularity(df):
     fig.add_trace(go.Scatter(x=sum_df['date'], y=sum_df['retweets'], mode='markers+lines'))
     return fig
 
+
 def twitter_csv_to_df(csv):
 	df = pd.read_csv(csv)
 	return df

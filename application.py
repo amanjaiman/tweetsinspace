@@ -16,6 +16,7 @@ import pandas as pd
 
 import utils
 import clean_data
+import news_wordcloud
 
 mapbox_access_token = open(".mapbox_token").read()
 
@@ -114,6 +115,9 @@ app.layout = html.Div([
     html.Div(children='''
         Input a query, and a valid ticker symbol.
     '''),
+    html.Div([
+        html.Img(id='word_cloud', src='/assets/dog.png')
+    ]),
     dcc.Input(id='search_box', value='UMD', type='text'),
     # dcc.Input(id='ticker_search_box', value='AAPL', type='text'),
     # dcc.Input(id='sent_search_box', value='Poison', type='text'),
@@ -142,6 +146,7 @@ app.layout = html.Div([
     Output('sentiment', 'figure'),
     Output('volume', 'figure'),
     Output('tweets', 'children'),
+    Output('word_cloud', 'src'),
     ],
 
     [Input('submit-button', 'n_clicks'),
@@ -172,8 +177,10 @@ def update_figure(n_clicks, date_range, query, ticker=None):
     df = df.sort_values(by='retweets', ascending=False)
     tweet_table = create_table(df)
     # tweet_table = None
+    img_path = news_wordcloud.get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
 
-    return map_figure, sentiment_fig, volume_fig, tweet_table
+    print(img_path)
+    return map_figure, sentiment_fig, volume_fig, tweet_table, img_path
 
 
 # @app.callback(
