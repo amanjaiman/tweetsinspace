@@ -5,15 +5,15 @@ import requests
 import numpy as np
 from pandas import DataFrame
 from TwitterAPI import TwitterAPI, TwitterPager
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+#from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 MAX_COUNT = 100
 
-sid = SentimentIntensityAnalyzer()
+#sid = SentimentIntensityAnalyzer()
 
 
-def sentiment(text: str) -> int:
-    return sid.polarity_scores(text)['compound']
+#def sentiment(text: str) -> int:
+#    return sid.polarity_scores(text)['compound']
 
 
 """
@@ -31,8 +31,7 @@ def get_tweet_info(query: str, num: int):
     for result in pager.get_iterator():
         coordinates = None
         if result['coordinates'] is not None:
-            print(result['coordinates'])
-            coordinates = result['coordinates']
+            coordinates = result['coordinates']['coordinates']
         elif result['place'] is not None:
             bbox = result['place']['bounding_box']['coordinates'][0]
             coordinates = np.mean(bbox, axis=0).tolist()
@@ -44,10 +43,10 @@ def get_tweet_info(query: str, num: int):
         print("Adding record "+ str(total))
         if total >= num:
             break
-    return DataFrame(data=entries, columns=['body', 'lat', 'long'])
+    return DataFrame(data=entries, columns=['body', 'long', 'lat'])
 
 
-def get_tweet_info_stock_graph(query: str, num: int):
+def get_tweet_info_no_loc(query: str, num: int):
     entries = []
     total = 0
     pager = query_twitter_api(query, "popular")
@@ -76,4 +75,6 @@ def query_twitter_api(query: str, result_type: str, count: int=MAX_COUNT) -> dic
                'count':         count}
     pager = TwitterPager(api, 'search/tweets', params)
     return pager
+
+get_tweet_info("Donald Trump", 1)
     

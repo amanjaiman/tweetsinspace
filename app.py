@@ -24,12 +24,7 @@ def generate_stock_graph(ticker, start, end, df2):
     df2['y'] = df['close'].min()
     fig.add_trace(go.Scatter(x=df2['date'], y=df2['y'], mode='markers', marker = {"color": df2['sentiment']}, name='', hovertext=df2['tweet'], ))
     fig.add_trace(go.Scatter(x=df['date'], y=df['close'], mode='lines', name=''))
-    return fig    
-
-
-
-
-
+    return fig
 
 # creates map
 def create_map(df):
