@@ -8,6 +8,7 @@ from pandas import DataFrame
 from TwitterAPI import TwitterAPI, TwitterPager
 
 import nltk
+nltk.download()
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 from newsapi.newsapi_client import NewsApiClient
@@ -22,9 +23,7 @@ import csv
 
 MAX_COUNT = 100
 
-nltk.downloader.download('vader_lexicon')
 sid = SentimentIntensityAnalyzer()
-
 
 def sentiment(text: str) -> int:
    return sid.polarity_scores(text)['compound']
