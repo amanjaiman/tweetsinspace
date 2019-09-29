@@ -137,7 +137,7 @@ def tweet_line_graph_popularity(df):
     df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%a %b %d %H:%M:%S %z %Y').date())
     sum_df = df.groupby(by='date', as_index=False).count()
     fig = go.Figure()
-    print(sum_df)
+    # print(sum_df)
     fig.add_trace(go.Scatter(x=sum_df['date'], y=sum_df['retweets'], mode='markers+lines'))
     return fig
 

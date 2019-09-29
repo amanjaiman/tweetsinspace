@@ -5,7 +5,10 @@ import pandas as pd
 from json import load
 
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 from PIL import Image
 import numpy as np
 
@@ -73,8 +76,11 @@ def generate_word_cloud(words, picture_location):
     savename = ''.join(picture_location.split("/")[-1:])+"_wordcloud.png"
 
     plt.savefig(savename)
+    # plt.close(wc)
+    print("done")
     return savename
 
+# returns path to image
 def get_word_cloud(query: str, start: str, end: str, picture_location: str, entities: bool):
     endpoint, key = getauth()
 
@@ -91,3 +97,4 @@ def get_word_cloud(query: str, start: str, end: str, picture_location: str, enti
     return generate_word_cloud(words, picture_location)
 
 # Example Usage: get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
+get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
