@@ -16,9 +16,10 @@ import pandas as pd
 
 import utils
 import clean_data
-import news_wordcloud
+# import news_wordcloud
 
-import random
+from random import uniform
+import numpy as np
 
 mapbox_access_token = open(".mapbox_token").read()
 
@@ -50,21 +51,25 @@ def create_map(df):
     favorites = df['favorites']
     retweets = df['retweets']
     
+    lat += np.random.uniform(-.1,.1,(len(lat)))
+    lon += np.random.uniform(-.1,.1,(len(lon)))
+
     # insert breaks in text for display
-    for i,s in enumerate(text):
-        for j in range(0,len(s),40):
-            s = s[:j] + '<br>' + s[j+1:]
-        text[i] = s
+    # for i,s in enumerate(text):
+    #     for j in range(0,len(s),40):
+    #         s = s[:j] + '<br>' + s[j+1:]
+    #     text[i] = s
 
     fig = go.Figure(go.Scattermapbox(
         lat=lat,
         lon=lon,
         mode='markers',
         marker=go.scattermapbox.Marker(
-            # size=retweets*10,
-            size=10,
+            size=np.log(retweets+2)*20,
+            # size=10,
             opacity=0.8,
             color = sentiment,
+            # color_continuous_scale='Magma'
         ),
         text=text,
         hoverinfo='text',
@@ -180,7 +185,8 @@ def update_figure(n_clicks, date_range, query, ticker=None):
     df = df.sort_values(by='retweets', ascending=False)
     tweet_table = create_table(df)
     # tweet_table = None
-    img_path = news_wordcloud.get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
+    # img_path = news_wordcloud.get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
+    img_path = 'dog.png_wordcloud.png'
     app.get_asset_url(img_path)
 
     # print(img_path)
