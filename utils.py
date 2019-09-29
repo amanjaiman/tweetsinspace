@@ -1,6 +1,7 @@
 from json import load, loads, dump
 from os.path import join
-
+import matplotlib.pyplot as plt
+import matplotlib.colors
 import requests
 import numpy as np
 from pandas import DataFrame
@@ -10,7 +11,7 @@ from newsapi.newsapi_client import NewsApiClient
 import dateutil.parser
 
 import pandas as pd
-
+import plotly.express as px
 import plotly.graph_objects as go
 import datetime
 
@@ -126,8 +127,8 @@ def return_news_df(query, start, end):
 
 # sentiment
 def new_time_series(df):
-        df = df.rename(columns={'data':'date'})
-        colorscale=[[0.0, "rgb(165,0,38)"],
+	df = df.rename(columns={'data':'date'})
+	colorscale=[[0.0, "rgb(165,0,38)"],
                 [0.1111111111111111, "rgb(215,48,39)"],
                 [0.2222222222222222, "rgb(244,109,67)"],
                 [0.3333333333333333, "rgb(253,174,97)"],
@@ -137,9 +138,9 @@ def new_time_series(df):
                 [0.7777777777777778, "rgb(116,173,209)"],
                 [0.8888888888888888, "rgb(69,117,180)"],
                 [1.0, "rgb(49,54,149)"]]
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], marker = {'color':df['sentiment']+1,'colorscale':colorscale}, mode='markers', name=''))
-        return fig
+	fig = go.Figure()
+	fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], marker = {'color':df['sentiment']+1,'colorscale':colorscale}, mode='markers', name=''))
+	return fig
 
 # volume
 def tweet_line_graph_popularity(df):
@@ -154,3 +155,4 @@ def tweet_line_graph_popularity(df):
 def twitter_csv_to_df(csv):
 	df = pd.read_csv(csv)
 	return df
+
