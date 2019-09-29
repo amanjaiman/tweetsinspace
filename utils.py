@@ -139,17 +139,20 @@ def new_time_series(df):
                 [0.8888888888888888, "rgb(69,117,180)"],
                 [1.0, "rgb(49,54,149)"]]
 	fig = go.Figure()
-	fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], marker = {'color':df['sentiment']+1,'colorscale':colorscale}, mode='markers', name=''))
+	pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+	df['date_bin'] = df['date'].apply(lambda x: dateutil.parser.parse(x).strftime("%Y-%m-%d %H:%M"))
+	fig.add_trace(go.Scatter(x=df['date_bin'], y=df['sentiment'], marker = {'color':df['sentiment']+1,'colorscale':colorscale}, mode='markers', name=''))
+	fig.update_xaxes(nticks = 5)
 	return fig
 
 # volume
 def tweet_line_graph_popularity(df):
-    df = df.rename(columns={'data':'date'})
-    df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%a %b %d %H:%M:%S %z %Y').strftime("%Y-%m-%d %H"))
-    sum_df = df.groupby(by='date', as_index=False).count()
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=sum_df['date'], y=sum_df['retweets'], mode='markers+lines'))
-    return fig
+	df = df.rename(columns={'data':'date'})
+	df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%a %b %d %H:%M:%S %z %Y').strftime("%Y-%m-%d %H"))
+	sum_df = df.groupby(by='date', as_index=False).count()
+	fig = go.Figure()
+	fig.add_trace(go.Scatter(x=sum_df['date'], y=sum_df['retweets'], mode='markers+lines'))
+	return fig
 
 
 def twitter_csv_to_df(csv):
