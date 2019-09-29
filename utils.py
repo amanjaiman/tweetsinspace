@@ -32,9 +32,7 @@ long        float64
 def get_tweet_info(query: str, num: int):
     total = 0
     pager = query_twitter_api(query, "mixed")
-    #results = []
     for result in pager.get_iterator():
-        #results.append(result)
         coordinates = None
         date = result['created_at']
         text = result['text']
@@ -61,9 +59,6 @@ def get_tweet_info(query: str, num: int):
         total += 1
         if total >= num:
             break
-    #with open('data/' + query + ".json", "w") as file:
-    #    dump(results, file)
-
 
 def get_tweet_info_no_loc(query: str, num: int):
     entries = []
@@ -86,7 +81,7 @@ returns the JSON output of the request as a dictionary.
 """
 def query_twitter_api(query: str, result_type: str, count: int=MAX_COUNT) -> dict:
     with open(join('assets', 'keys.json')) as file:
-        data = load(file)
+        data = load(file)['twitter']
     api = TwitterAPI(**data)
     params = {'q':              query,
                'result_type':   result_type,
