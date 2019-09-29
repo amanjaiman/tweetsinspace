@@ -11,6 +11,8 @@ import dateutil.parser
 
 import pandas as pd
 
+import plotly.graph_objects as go
+import datetime
 
 import csv
 
@@ -121,16 +123,24 @@ def return_news_df(query, start, end):
         df = pd.DataFrame(dict_list)
         return df
     return None
-    
+
+# sentiment
 def new_time_series(df):
+    df = df.rename(columns={'data':'date'})
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='marker', name=''))
+    fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='markers', name=''))
     return fig
 
+# volume
 def tweet_line_graph_popularity(df):
-    df[date_binned] = datetime.datetime.strptime(df[date_binned], '%a %b %d %H:%M:%S %z %Y').date()
-    sum_df = df.groupby(by='date_binned', as_index=False).count()
+    df = df.rename(columns={'data':'date'})
+    df['date'] = df['date'].apply(lambda x: datetime.datetime.strptime(x, '%a %b %d %H:%M:%S %z %Y').date())
+    sum_df = df.groupby(by='date', as_index=False).count()
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=sum_df['date_binned'], y=sum_df['count'], mode='markers+line'))
+    print(sum_df)
+    fig.add_trace(go.Scatter(x=sum_df['date'], y=sum_df['retweets'], mode='markers+lines'))
     return fig
-    
+
+def twitter_csv_to_df(csv):
+	df = pd.read_csv(csv)
+	return df
