@@ -18,6 +18,8 @@ import clean_data
 mapbox_access_token = open(".mapbox_token").read()
 
 days = 30
+DATA_PATH = './data/Donald TrumpGEOresults.csv'
+# DATA_PATH = './data/trump_geo.csv'
 
 # creates stock chart
 def generate_stock_graph(ticker, start, end, df2):
@@ -31,17 +33,21 @@ def generate_stock_graph(ticker, start, end, df2):
     fig.add_trace(go.Scatter(x=df['date'], y=df['close'], mode='lines', name=''))
     return fig
 
-# from newsapi.newsapi_client import NewsApiClient
-# import pandas as pd
 
 # creates map
 def create_map(df):
 
     lat = df['latitude']
     lon = df['longitude']
-    text = df['body']
+    text = df['text']
     sentiment = df['sentiment']
     
+    # insert breaks in text for display
+    for i,s in enumerate(text):
+        for j in range(0,len(s),40):
+            s = s[:j] + '<br>' + s[j+1:]
+        text[i] = s
+
     fig = go.Figure(go.Scattermapbox(
         lat=lat,
         lon=lon,
@@ -52,7 +58,8 @@ def create_map(df):
             color = sentiment,
         ),
         text=text,
-        
+        hoverinfo='text',
+        hoverlabel=dict(namelength = -1),
     ))
 
     fig.update_layout(
@@ -81,7 +88,7 @@ def create_table(df, max_rows=20):
         # Header
         [html.Tr([html.Th(col) for col in df.columns])] +
 
-        # Body
+        # text
         [html.Tr([
             html.Td(df.iloc[i][col]) for col in df.columns
         ]) for i in range(min(len(df), max_rows))]
@@ -101,7 +108,7 @@ app.layout = html.Div([
         Input a query, and a valid ticker symbol.
     '''),
     dcc.Input(id='search_box', value='UMD', type='text'),
-    dcc.Input(id='ticker_search_box', value='AAPL', type='text'),
+    # dcc.Input(id='ticker_search_box', value='AAPL', type='text'),
     # dcc.Input(id='sent_search_box', value='Poison', type='text'),
 
     html.Button(id='submit-button', n_clicks=0, children='Submit'),
@@ -125,7 +132,7 @@ app.layout = html.Div([
 '''callback wrapper and function for interactivity'''
 @app.callback(
     [Output('map', 'figure'),
-    Output('chart', 'figure'),
+    # Output('chart', 'figure'),
     Output('tweets', 'children'),
     ],
 
@@ -134,26 +141,26 @@ app.layout = html.Div([
     ],
 
     [State('search_box', 'value'),
-    State('ticker_search_box', 'value')
+    # State('ticker_search_box', 'value')
     ])
-def update_figure(n_clicks, date_range, query, ticker):
+def update_figure(n_clicks, date_range, query, ticker=None):
 
     # call Jagan's module
-    df = clean_data.get_data('./data/trump_geo.csv')
-    # df = pd.DataFrame({'latitude': ['45.5017'], 'longitude':['-73.5673'], 'body': ['Montreal']})
+    df = clean_data.get_data(DATA_PATH)
+    # df = pd.DataFrame({'latitude': ['45.5017'], 'longitude':['-73.5673'], 'text': ['Montreal']})
     map_figure = create_map(df)
 
     # start = datetime(2005, 1, 1)
     start = datetime.now() - timedelta(days=date_range[1])
     end = datetime.now() - timedelta(days=date_range[0])
     
-    chart_fig = generate_stock_graph(ticker, start, end)
+    # chart_fig = generate_stock_graph(ticker, start, end)
 
     # tweet_data = 
     tweet_table = create_table(df)
     # tweet_table = None
 
-    return map_figure, chart_fig, tweet_table
+    return map_figure, tweet_table
 
 
 # @app.callback(
