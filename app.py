@@ -12,7 +12,7 @@ import pandas as pd
 from pandas_datareader import data
 import plotly.express as px
 import os
-
+import pandas as pd
 import clean_data
 
 mapbox_access_token = open(".mapbox_token").read()
@@ -20,28 +20,18 @@ mapbox_access_token = open(".mapbox_token").read()
 days = 30
 
 # creates stock chart
-def generate_stock_graph(ticker, start, end):
-    os.environ["IEX_API_KEY"] = "pk_e198e446a54843a48b90ea9b1c85bf3f"
-
+def generate_stock_graph(ticker, start, end, df2):
+    # df2 is a dataframe consisting of tweets with columns: date, sentiment, tweet
+    fig = go.Figure()
     df = data.DataReader(ticker, 'iex', start, end)
     df.reset_index(level=0, inplace=True)
-    fig = px.line(df, x='date', y='close', title='Stock Price for ' + ticker)
+    m = df['close'].min()
+    df2['y'] = m - 1
+    fig.add_trace(go.Scatter(x=df2['date'], y=df2['y'], mode='markers', marker = {"color": df2['sentiment']}, name='', hovertext=df2['tweet'], ))
+    fig.add_trace(go.Scatter(x=df['date'], y=df['close'], mode='lines', name=''))
     return fig
 
-from newsapi.newsapi_client import NewsApiClient
-import pandas as pd
 
-def return_news_df(query, start, end):
-    newsapi = NewsApiClient(api_key='4b569ddbefbc4621927cbf78eaed5444')
-    articles = newsapi.get_everything(q=query,from_param=start,to=end,language='en',sort_by='relevancy')
-    dict_list = []
-    if articles['status'] == 'ok':
-        for article in articles['articles']:
-            dict_list.append({'source':article['source']['name'], 'author': article['author'], 'title': article['title'], 'description':article['description'], 'content':article['description']})
-        df = pd.DataFrame(dict_list)
-        return df
-    return None
-    
 # creates map
 def create_map(df):
 
