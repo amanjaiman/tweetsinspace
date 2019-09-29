@@ -6,7 +6,10 @@ import requests
 import numpy as np
 from pandas import DataFrame
 from TwitterAPI import TwitterAPI, TwitterPager
+
+import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 from newsapi.newsapi_client import NewsApiClient
 import dateutil.parser
 
@@ -19,6 +22,7 @@ import csv
 
 MAX_COUNT = 100
 
+nltk.downloader.download('vader_lexicon')
 sid = SentimentIntensityAnalyzer()
 
 
