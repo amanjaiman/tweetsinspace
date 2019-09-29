@@ -60,7 +60,7 @@ def get_tweet_info(query: str, num: int):
             if total >= num:
                 break
     with open('data/' + query + ".json", "w") as file:
-        dump(file, results)
+        dump(results, file)
 
 
 def get_tweet_info_no_loc(query: str, num: int):
