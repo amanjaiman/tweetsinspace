@@ -65,7 +65,7 @@ def create_map(df):
         lon=lon,
         mode='markers',
         marker=go.scattermapbox.Marker(
-            size=np.log(retweets+2)*20,
+            size=np.log(retweets+2)*10,
             # size=10,
             opacity=0.8,
             color = sentiment,
@@ -186,7 +186,7 @@ def update_figure(n_clicks, date_range, query, ticker=None):
     tweet_table = create_table(df)
     # tweet_table = None
     # img_path = news_wordcloud.get_word_cloud("Joe Biden", "2019-09-24", "2019-09-28", "assets/dog.png", False)
-    img_path = 'dog.png_wordcloud.png'
+    img_path = 'assets/dog.png_wordcloud.png'
     app.get_asset_url(img_path)
 
     # print(img_path)
