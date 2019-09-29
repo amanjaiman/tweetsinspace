@@ -31,6 +31,8 @@ def generate_stock_graph(ticker, start, end, df2):
     fig.add_trace(go.Scatter(x=df['date'], y=df['close'], mode='lines', name=''))
     return fig
 
+# from newsapi.newsapi_client import NewsApiClient
+# import pandas as pd
 
 # creates map
 def create_map(df):
@@ -104,7 +106,7 @@ app.layout = html.Div([
 
     html.Button(id='submit-button', n_clicks=0, children='Submit'),
 
-    html.Div(id='Tweets'),
+    html.Div(id='tweets'),
     dcc.RangeSlider(
         id='date_range_slider',
         min=0,
@@ -124,7 +126,7 @@ app.layout = html.Div([
 @app.callback(
     [Output('map', 'figure'),
     Output('chart', 'figure'),
-    Output('text', 'children'),
+    Output('tweets', 'children'),
     ],
 
     [Input('submit-button', 'n_clicks'),
