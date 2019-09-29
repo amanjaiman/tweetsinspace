@@ -85,7 +85,7 @@ returns the JSON output of the request as a dictionary.
 def query_twitter_api(query: str, result_type: str, count: int=MAX_COUNT) -> dict:
     with open(join('assets', 'keys.json')) as file:
         data = load(file)
-    api = TwitterAPI(**data)
+    api = TwitterAPIdata)
     params = {'q':              query,
                'result_type':   result_type,
                'count':         count}
@@ -99,13 +99,15 @@ def return_news_df(query, start, end):
     pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     if articles['status'] == 'ok':
         for article in articles['articles']:
-            dict_list.append({'source':article['source']['name'],'date':dateutil.parser.parse(article['publishedAt']).date(), 'author': article['author'], 'title': article['title'], 'description':article['description'], 'content':article['content'], 'sentiment':sentiment(article['content'])})
+            dict_list.append({'source':article['source']['name'],'date':dateutil.parser.parse(article['publishedAt']).date(), 'author': article['author'], 'title': article['title'], 'description':article['description'], 'content':article['content'], 'sentiment':sentiment(article['sentiment'])})
         df = pd.DataFrame(dict_list)
         return df
     return None
     
-def new_time_series(df):
+def news_time_series(df):
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='marker', name=''))
+    fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='markers', name=''))
     return fig
+
+
 
