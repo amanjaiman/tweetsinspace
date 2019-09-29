@@ -17,6 +17,8 @@ import clean_data
 
 mapbox_access_token = open(".mapbox_token").read()
 
+days = 30
+
 # creates stock chart
 def generate_stock_graph(ticker, start, end):
     os.environ["IEX_API_KEY"] = "pk_e198e446a54843a48b90ea9b1c85bf3f"
@@ -32,6 +34,7 @@ def create_map(df):
     lat = df['latitude']
     lon = df['longitude']
     text = df['body']
+    sentiment = df['sentiment']
     
     fig = go.Figure(go.Scattermapbox(
         lat=lat,
@@ -39,9 +42,11 @@ def create_map(df):
         mode='markers',
         marker=go.scattermapbox.Marker(
             size=10,
-            opacity=0.4
+            opacity=0.8,
+            color = sentiment,
         ),
         text=text,
+        
     ))
 
     fig.update_layout(
@@ -54,25 +59,26 @@ def create_map(df):
                 lon=-73
             ),
             pitch=0,
-            zoom=5
+            zoom=5,
+            style='dark',
         ),
-        height=600,
+        height=800,
     )
 
     return fig
 
-def create_table(data, max_rows=20):
+def create_table(df, max_rows=20):
 
-    dataframe = pd.DataFrame(data=data)
+    # dataframe = pd.DataFrame(data=data)
 
     return html.Table(
         # Header
-        [html.Tr([html.Th(col) for col in dataframe.columns])] +
+        [html.Tr([html.Th(col) for col in df.columns])] +
 
         # Body
         [html.Tr([
-            html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
-        ]) for i in range(min(len(dataframe), max_rows))]
+            html.Td(df.iloc[i][col]) for col in df.columns
+        ]) for i in range(min(len(df), max_rows))]
     )
 
 
@@ -82,7 +88,6 @@ app = dash.Dash(__name__)
 now = datetime.now()
 
 app.layout = html.Div([
-    
     
     dcc.Graph(id='map'),
     dcc.Graph(id='chart'),
@@ -99,10 +104,10 @@ app.layout = html.Div([
     dcc.RangeSlider(
         id='date_range_slider',
         min=0,
-        max=10,
+        max=days,
         # step=0.5,
-        value=[0, 7],
-        marks = {i: (now - timedelta(days=i)).strftime("%m/%d/%Y") for i in range(7)}
+        value=[0, days],
+        marks = {i: (now - timedelta(days=i)).strftime("%m/%d/%Y") for i in range(days)}
         # marks={i: 'Label {}'.format(i) for i in range(10)},
     ),
     # html.Div(id='docs'),
@@ -115,7 +120,7 @@ app.layout = html.Div([
 @app.callback(
     [Output('map', 'figure'),
     Output('chart', 'figure'),
-    # Output('text', 'children'),
+    Output('text', 'children'),
     ],
 
     [Input('submit-button', 'n_clicks'),
@@ -139,10 +144,10 @@ def update_figure(n_clicks, date_range, query, ticker):
     chart_fig = generate_stock_graph(ticker, start, end)
 
     # tweet_data = 
-    # tweet_table = create_table(tweet_data):
-    tweet_table = None
+    tweet_table = create_table(df)
+    # tweet_table = None
 
-    return map_figure, chart_fig
+    return map_figure, chart_fig, tweet_table
 
 
 # @app.callback(

@@ -12,6 +12,8 @@ def get_data(path):
     df = df.replace(['type', 'coordinates'], np.nan)
     df = df.dropna()
 
+    df.insert(3, 'sentiment', df['body'].map(utils.sentiment))
+    # df['sentiment'] = df['body'].apply(utils.sentiment)
     # print(df.shape)
 
     return df
