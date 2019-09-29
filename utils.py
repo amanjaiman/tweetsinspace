@@ -33,32 +33,31 @@ def get_tweet_info(query: str, num: int):
     total = 0
     pager = query_twitter_api(query, "recent")
     results = []
-    with open('data/'+query+'results.csv', 'a') as file:
-        for result in pager.get_iterator():
-            results.append(result)
-            coordinates = None
-            if result['coordinates'] is not None:
-                coordinates = result['coordinates']['coordinates']
-            elif result['place'] is not None:
-                bbox = result['place']['bounding_box']['coordinates'][0]
-                coordinates = np.mean(bbox, axis=0).tolist()
-            if coordinates is None:
-                continue
-            
-            date = result['created_at']
-            text = result['text']
-            sent = sentiment(text)
-            favorites = result['favorite_count']
-            retweets = result['retweet_count']
+    for result in pager.get_iterator():
+        results.append(result)
+        coordinates = None
+        if result['coordinates'] is not None:
+            coordinates = result['coordinates']['coordinates']
+        elif result['place'] is not None:
+            bbox = result['place']['bounding_box']['coordinates'][0]
+            coordinates = np.mean(bbox, axis=0).tolist()
+        if coordinates is None:
+            continue
+        
+        date = result['created_at']
+        text = result['text']
+        sent = sentiment(text)
+        favorites = result['favorite_count']
+        retweets = result['retweet_count']
 
-            entry = [date, text, sent, favorites, retweets, *coordinates]
-
+        entry = [date, text, sent, favorites, retweets, *coordinates]
+        with open('data/'+query+'results.csv', 'a') as file:
             writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(entry)
 
-            total += 1
-            if total >= num:
-                break
+        total += 1
+        if total >= num:
+            break
     with open('data/' + query + ".json", "w") as file:
         dump(results, file)
 
