@@ -124,3 +124,10 @@ def new_time_series(df):
     fig.add_trace(go.Scatter(x=df['date'], y=df['sentiment'], mode='marker', name=''))
     return fig
 
+def tweet_line_graph_popularity(df):
+    df[date_binned] = datetime.datetime.strptime(df[date_binned], '%a %b %d %H:%M:%S %z %Y').date()
+    sum_df = df.groupby(by='date_binned', as_index=False).count()
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=sum_df['date_binned'], y=sum_df['count'], mode='markers+line'))
+    return fig
+    
