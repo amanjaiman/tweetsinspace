@@ -13,6 +13,8 @@ from pandas_datareader import data
 import plotly.express as px
 import os
 import pandas as pd
+
+import utils
 import clean_data
 
 mapbox_access_token = open(".mapbox_token").read()
@@ -20,6 +22,7 @@ mapbox_access_token = open(".mapbox_token").read()
 days = 30
 DATA_PATH = './data/Donald TrumpGEOresults.csv'
 # DATA_PATH = './data/trump_geo.csv'
+MODE = 'LOAD' # LOAD existing or QUERY new
 
 # creates stock chart
 def generate_stock_graph(ticker, start, end, df2):
@@ -41,6 +44,8 @@ def create_map(df):
     lon = df['longitude']
     text = df['text']
     sentiment = df['sentiment']
+    favorites = df['favorites']
+    retweets = df['retweets']
     
     # insert breaks in text for display
     for i,s in enumerate(text):
@@ -53,7 +58,7 @@ def create_map(df):
         lon=lon,
         mode='markers',
         marker=go.scattermapbox.Marker(
-            size=10,
+            size=retweets*10,
             opacity=0.8,
             color = sentiment,
         ),
@@ -103,7 +108,9 @@ now = datetime.now()
 app.layout = html.Div([
     
     dcc.Graph(id='map'),
-    dcc.Graph(id='chart'),
+    dcc.Graph(id='sentiment'),
+    # dcc.Graph(id='volume'),
+
     html.Div(children='''
         Input a query, and a valid ticker symbol.
     '''),
@@ -132,7 +139,8 @@ app.layout = html.Div([
 '''callback wrapper and function for interactivity'''
 @app.callback(
     [Output('map', 'figure'),
-    # Output('chart', 'figure'),
+    Output('sentiment', 'figure'),
+    # Output('volume', 'figure'),
     Output('tweets', 'children'),
     ],
 
@@ -145,22 +153,26 @@ app.layout = html.Div([
     ])
 def update_figure(n_clicks, date_range, query, ticker=None):
 
-    # call Jagan's module
-    df = clean_data.get_data(DATA_PATH)
+    # get data
+    if MODE == 'QUERY':
+        df = clean_data.scrape_tweets(query, 1)
+    elif MODE == 'LOAD':
+        df = clean_data.get_data(DATA_PATH)
     # df = pd.DataFrame({'latitude': ['45.5017'], 'longitude':['-73.5673'], 'text': ['Montreal']})
     map_figure = create_map(df)
 
-    # start = datetime(2005, 1, 1)
+    sentiment_fig = utils.new_time_series(df)
+
     start = datetime.now() - timedelta(days=date_range[1])
     end = datetime.now() - timedelta(days=date_range[0])
     
     # chart_fig = generate_stock_graph(ticker, start, end)
 
-    # tweet_data = 
+    df = df.sort_values(by='retweets', ascending=False)
     tweet_table = create_table(df)
     # tweet_table = None
 
-    return map_figure, tweet_table
+    return map_figure, sentiment_fig, tweet_table
 
 
 # @app.callback(

@@ -18,5 +18,10 @@ def get_data(path):
 
     return df
 
+# def scrape_tweets(query, num):
+#     get_tweet_info(query, num)
+
+#     with open('data/'+query+'FULLresults.csv', 'r') as file:
+
 # df = utils.get_tweet_info("Donald Trump", 100)
 # df.to_csv('data/trump_geo.csv')
