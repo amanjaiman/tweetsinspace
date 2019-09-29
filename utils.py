@@ -31,26 +31,28 @@ long        float64
 """
 def get_tweet_info(query: str, num: int):
     total = 0
-    pager = query_twitter_api(query, "recent")
+    pager = query_twitter_api(query, "mixed")
     for result in pager.get_iterator():
-        results.append(result)
         coordinates = None
+        date = result['created_at']
+        text = result['text']
+        sent = sentiment(text)
+        favorites = result['favorite_count']
+        retweets = result['retweet_count']
         if result['coordinates'] is not None:
             coordinates = result['coordinates']['coordinates']
         elif result['place'] is not None:
             bbox = result['place']['bounding_box']['coordinates'][0]
             coordinates = np.mean(bbox, axis=0).tolist()
         if coordinates is None:
+            entry = [date, text, sent, favorites, retweets]
+            with open('data/'+query+'FULLresults.csv', 'a') as file:
+                writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(entry)
             continue
-        
-        date = result['created_at']
-        text = result['text']
-        sent = sentiment(text)
-        favorites = result['favorite_count']
-        retweets = result['retweet_count']
 
         entry = [date, text, sent, favorites, retweets, *coordinates]
-        with open('data/'+query+'results.csv', 'a') as file:
+        with open('data/'+query+'GEOresults.csv', 'a') as file:
             writer = csv.writer(file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(entry)
 
