@@ -1,5 +1,9 @@
 # tweetsin.space
 Around the world in 140 characters.
+
+!["Donald Trump Tweet Map](https://raw.githubusercontent.com/amanjaiman/tweetsinspace/master/assets/tweet_map.PNG)
+<p style="margin: 0 auto"><i>Tweet Map in the United States for querying "Donald Trump"</i></p>
+
 ## Inspiration
 There are so many news articles and tweets written everyday about so many events and people. People want to find out what's going on in the world around them, and see why it's important and why people care.
 ## What it does
