@@ -88,7 +88,7 @@ six==1.12.0
 soupsieve==1.9.3
 sqlparse==0.3.0
 tensorboard==1.13.1
-tensorflow==1.13.1
+tensorflow==2.5.3
 tensorflow-estimator==1.13.0
 tensorflow-gpu==1.13.1
 termcolor==1.1.0
