@@ -93,7 +93,7 @@ tensorflow-estimator==1.13.0
 tensorflow-gpu==1.13.1
 termcolor==1.1.0
 tqdm==4.32.2
-Twisted==17.9.0
+Twisted==22.4.0
 TwitterAPI==2.5.9
 urllib3==1.25.6
 virtualenv==16.7.5
